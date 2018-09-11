@@ -29,7 +29,7 @@ class Flame<T> private constructor(param: FlameParam<T>) {
             TYPE_TIP -> {
                 mFlameView!!.setTip(param.tip!!)
                 if (param.onRetryListener != null) {
-                    mFlameView.setRetryListener(param.onRetryListener)
+                    mFlameView.setRetryListener(param.onRetryListener!!)
                 }
             }
             else -> {

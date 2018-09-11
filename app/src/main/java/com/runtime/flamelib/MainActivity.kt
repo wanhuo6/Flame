@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Flame.with(this).crate()
+        Flame.with(this).setType(Flame.TYPE_TIP).setTip("dd").crate()
         Handler().postDelayed({Flame.remove(this)} ,3000)
 
     }
