@@ -1,81 +1,90 @@
 package com.runtime.flame
+
 import android.app.Activity
 import android.support.v4.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 
 
-class Flame private constructor(param: FlameParam) {
+class Flame<T> private constructor(param: FlameParam<T>) {
 
     init {
         initFlame(param)
     }
 
-    private fun initFlame(param: FlameParam) {
-        if (param.activity == null && param.fragment == null) {
+    private fun initFlame(param: FlameParam<T>) {
+        if (param.content == null) {
             return
         }
-        val mFlameView = FlameView(param.activity ?: param.fragment!!.context!!)
+        var mFlameView: FlameView? = when (param.content) {
+            is Activity -> FlameView(param.content as Activity)
+            is Fragment -> FlameView((param.content as Fragment).context!!)
+            else -> {
+                return
+            }
+        }
+
         when (param.type) {
-            TYPE_DEFAULT -> mFlameView.setProgress(View.VISIBLE)
+            TYPE_DEFAULT -> mFlameView!!.setProgress(View.VISIBLE)
             TYPE_TIP -> {
-                mFlameView.setTip(param.tip!!)
-                if (param.onRetryListener!=null){
+                mFlameView!!.setTip(param.tip!!)
+                if (param.onRetryListener != null) {
                     mFlameView.setRetryListener(param.onRetryListener)
                 }
             }
             else -> {
             }
         }
-
-        if (param.activity != null) {
-            remove(param.activity)
-            param.activity.addContentView(mFlameView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT))
-        } else if (param.fragment != null) {
-            remove(param.fragment)
-            var viewGroup: ViewGroup = param.fragment.view as ViewGroup
-            viewGroup.addView(mFlameView)
+        when (param.content) {
+            is Activity -> {
+                remove(param.content as Activity)
+                (param.content as Activity).addContentView(mFlameView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT))
+            }
+            is Fragment -> {
+                remove(param.content as Fragment)
+                var viewGroup: ViewGroup = (param.content as Fragment).view as ViewGroup
+                viewGroup.addView(mFlameView)
+            }
+            else -> {
+                return
+            }
         }
-
     }
 
-    class Builder {
-        private var param: FlameParam? = null
+    class Builder<T> {
+        private var param: FlameParam<T>? = null
 
-        constructor(activity: Activity) {
-            param = FlameParam(activity)
+        constructor (t: T) {
+            param = FlameParam(t)
         }
 
-        constructor(fragment: Fragment) {
-            param = FlameParam(fragment)
-        }
-
-        fun setType(type: Int): Builder {
+        fun setType(type: Int): Builder<T> {
             param!!.type = type
             return this
         }
 
-        fun setTip(tip: String): Builder {
+        fun setTip(tip: String): Builder<T> {
             param!!.tip = tip
             return this
         }
 
-        fun setConfirm(confirm: String): Builder {
+        fun setConfirm(confirm: String): Builder<T> {
             param!!.confirm = confirm
             return this
         }
 
-        fun setCancel(cancel: String): Builder {
+        fun setCancel(cancel: String): Builder<T> {
             param!!.cancel = cancel
             return this
         }
 
-        fun setRetryListener(onRetryListener: FlameInterface.OnRetryListener): Builder{
-            param!!.onRetryListener=onRetryListener
+        fun setRetryListener(onRetryListener: FlameInterface.OnRetryListener): Builder<T> {
+            param!!.onRetryListener = onRetryListener
             return this
         }
-        fun crate(): Flame {
+
+        fun crate(): Flame<T> {
             return Flame(param!!)
         }
     }
@@ -85,34 +94,35 @@ class Flame private constructor(param: FlameParam) {
         const val TYPE_DEFAULT = 0//progress
         const val TYPE_TIP = 1
 
-        fun  with(activity: Activity): Builder {
+        fun <T> with(t: T): Builder<T> {
 
-            return Builder(activity)
+            return Builder(t)
         }
 
-        fun with(fragment: Fragment): Builder {
-
-            return Builder(fragment)
-        }
-
-        fun remove(activity: Activity?) {
-            if (activity == null) {
+        fun<T> remove(t:T) {
+            if (t == null) {
                 return
             }
-            val viewGroup = activity.findViewById<ViewGroup>(android.R.id.content) ?: return
-            val view = viewGroup.getChildAt(viewGroup.childCount - 1)
+            when(t){
+                is Activity-> remove(t as Activity)
+                is Fragment-> remove(t as Fragment)
+            }
+
+        }
+
+        private  fun remove(activity: Activity?) {
+            var viewGroup = activity!!.findViewById<ViewGroup>(android.R.id.content) ?: return
+            var view = viewGroup.getChildAt(viewGroup.childCount - 1)
             if (view is FlameView) {
                 viewGroup.removeView(view)
             }
         }
 
-        fun remove(fragment: Fragment?) {
-            if (fragment == null) {
-                return
-            }
-            var viewGroup:ViewGroup=fragment.view as ViewGroup
-            if(viewGroup.getChildAt((viewGroup).childCount - 1)is FlameView){
-                viewGroup.removeViewAt(viewGroup.childCount - 1)
+        private fun remove(fragment: Fragment?) {
+            var viewGroup: ViewGroup = fragment!!.view as ViewGroup
+            var view=viewGroup.getChildAt((viewGroup).childCount - 1);
+            if (view is FlameView) {
+                viewGroup.removeView(view)
             }
         }
     }
