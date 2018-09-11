@@ -1,11 +1,11 @@
-
+package com.runtime.flame
 interface FlameInterface {
 
-    interface onRetryListener {
-        fun onClick()
+    interface OnRetryListener {
+        fun onRetryClick()
     }
 
-    interface onTipListener {
+    interface OnTipListener {
         fun onConfirm()
         fun onCancel()
     }

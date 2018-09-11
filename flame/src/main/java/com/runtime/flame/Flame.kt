@@ -1,3 +1,4 @@
+package com.runtime.flame
 import android.app.Activity
 import android.support.v4.app.Fragment
 import android.view.View
@@ -17,10 +18,16 @@ class Flame private constructor(param: FlameParam) {
         val mFlameView = FlameView(param.activity ?: param.fragment!!.context!!)
         when (param.type) {
             TYPE_DEFAULT -> mFlameView.setProgress(View.VISIBLE)
-            TYPE_TIP -> mFlameView.setTip(param.tip!!)
+            TYPE_TIP -> {
+                mFlameView.setTip(param.tip!!)
+                if (param.onRetryListener!=null){
+                    mFlameView.setRetryListener(param.onRetryListener)
+                }
+            }
             else -> {
             }
         }
+
         if (param.activity != null) {
             remove(param.activity)
             param.activity.addContentView(mFlameView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -64,6 +71,10 @@ class Flame private constructor(param: FlameParam) {
             return this
         }
 
+        fun setRetryListener(onRetryListener: FlameInterface.OnRetryListener): Builder{
+            param!!.onRetryListener=onRetryListener
+            return this
+        }
         fun crate(): Flame {
             return Flame(param!!)
         }
@@ -74,7 +85,7 @@ class Flame private constructor(param: FlameParam) {
         const val TYPE_DEFAULT = 0//progress
         const val TYPE_TIP = 1
 
-        fun with(activity: Activity): Builder {
+        fun  with(activity: Activity): Builder {
 
             return Builder(activity)
         }
