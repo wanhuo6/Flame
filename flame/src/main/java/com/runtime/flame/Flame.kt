@@ -1,7 +1,10 @@
 package com.runtime.flame
 
 import android.app.Activity
+import android.content.Context
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 
@@ -25,14 +28,25 @@ class Flame<T> private constructor(param: FlameParam<T>) {
         }
 
         when (param.type) {
-            TYPE_DEFAULT -> mFlameView!!.setProgress(View.VISIBLE)
-            TYPE_TIP -> {
-                mFlameView!!.setTip(param.tip!!)
-                if (param.onRetryListener != null) {
-                    mFlameView.setRetryListener(param.onRetryListener!!)
+            FlameType.LOADING -> {
+                if (param.isRetry!=null&& param.isRetry!!){
+                    mFlameView!!.setTip(param.tip!!)
+                    if (param.onRetryListener != null) {
+                        mFlameView.setRetryListener(param.onRetryListener!!)
+                    }
+                }else{
+                    mFlameView!!.setProgress(View.VISIBLE)
                 }
+
+            }
+            FlameType.DIALOG -> {
+                var context:Context = if (param.content is Activity) param.content else (param.content as Fragment).context!!
+                val builder = AlertDialog.Builder(context)
+                builder.setMessage(if(TextUtils.isEmpty(param.tip)) "异常" else param.tip).setPositiveButton("知道") { dialog, _ -> dialog.dismiss() }.create().show()
+                return
             }
             else -> {
+                return
             }
         }
         when (param.content) {
@@ -59,13 +73,19 @@ class Flame<T> private constructor(param: FlameParam<T>) {
             param = FlameParam(t)
         }
 
-        fun setType(type: Int): Builder<T> {
+        fun setType(type: FlameType): Builder<T> {
             param!!.type = type
             return this
         }
 
         fun setTip(tip: String): Builder<T> {
             param!!.tip = tip
+            return this
+        }
+
+        fun setRetry(tip:String): Builder<T>{
+            param!!.tip=tip
+            param!!.isRetry=true
             return this
         }
 
@@ -84,6 +104,16 @@ class Flame<T> private constructor(param: FlameParam<T>) {
             return this
         }
 
+        fun destroy() {
+            if (param!!.content == null) {
+                return
+            }
+            when(param!!.content){
+                is Activity-> remove(param!!.content as Activity)
+                is Fragment-> remove(param!!.content as Fragment)
+            }
+        }
+
         fun crate(): Flame<T> {
             return Flame(param!!)
         }
@@ -91,24 +121,13 @@ class Flame<T> private constructor(param: FlameParam<T>) {
 
     companion object {
 
-        const val TYPE_DEFAULT = 0//progress
-        const val TYPE_TIP = 1
 
         fun <T> with(t: T): Builder<T> {
 
             return Builder(t)
         }
 
-        fun<T> remove(t:T) {
-            if (t == null) {
-                return
-            }
-            when(t){
-                is Activity-> remove(t as Activity)
-                is Fragment-> remove(t as Fragment)
-            }
 
-        }
 
         private  fun remove(activity: Activity?) {
             var viewGroup = activity!!.findViewById<ViewGroup>(android.R.id.content) ?: return

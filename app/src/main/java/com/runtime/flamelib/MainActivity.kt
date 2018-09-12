@@ -4,14 +4,15 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.runtime.flame.Flame
+import com.runtime.flame.FlameType
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Flame.with(this).setType(Flame.TYPE_TIP).setTip("dd").crate()
-        Handler().postDelayed({Flame.remove(this)} ,3000)
+        Flame.with(this).setTip("你说的啥").setType(FlameType.DIALOG).crate()
+        Handler().postDelayed({Flame.with(this).destroy()} ,5000)
 
     }
 }
