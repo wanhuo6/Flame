@@ -9,12 +9,9 @@ import kotlinx.android.synthetic.main.view_flame.view.*
 class FlameView constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : RelativeLayout(context, attrs, defStyleAttr) {
 
     init {
-        init()
-    }
-
-    private fun init() {
         LayoutInflater.from(context).inflate(R.layout.view_flame, this)
-        setBackgroundResource(R.color.gray)
+        setBackgroundResource(R.color.flame_bg)
+        alpha=0.92f
     }
 
     fun setProgress(visibility: Int) {
