@@ -12,6 +12,7 @@ class FlameView constructor(context: Context, attrs: AttributeSet? = null, defSt
         LayoutInflater.from(context).inflate(R.layout.view_flame, this)
         setBackgroundResource(R.color.flame_bg)
         alpha=0.92f
+        isClickable=true
     }
 
     fun setProgress(visibility: Int) {
