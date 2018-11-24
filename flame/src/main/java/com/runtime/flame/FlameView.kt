@@ -1,4 +1,5 @@
 package com.runtime.flame
+
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -11,8 +12,8 @@ class FlameView constructor(context: Context, attrs: AttributeSet? = null, defSt
     init {
         LayoutInflater.from(context).inflate(R.layout.view_flame, this)
         setBackgroundResource(R.color.flame_bg)
-        alpha=0.92f
-        isClickable=true
+        alpha = 0.92f
+        isClickable = true
     }
 
     fun setProgress(visibility: Int) {
@@ -24,10 +25,11 @@ class FlameView constructor(context: Context, attrs: AttributeSet? = null, defSt
         tvTip!!.text = tip
     }
 
-    fun setRetryListener(onRetryListener:FlameInterface.OnRetryListener){
-        if (onRetryListener==null){
+    fun setRetryListener(onRetryListener: FlameInterface.OnRetryListener) {
+        if (onRetryListener == null) {
             return
         }
+        ivError.visibility = View.VISIBLE
         tvTip!!.setOnClickListener { onRetryListener.onRetryClick() }
     }
 

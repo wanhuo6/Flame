@@ -7,17 +7,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"
         android:padding="20dp"
+        android:visibility="gone"
         />
 
+    <ImageView
+        android:id="@+id/ivError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvTip"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/flame_net_error"
+        android:visibility="gone"
+        />
 
     <ProgressBar
         android:id="@+id/progressBar"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
 
 </merge>

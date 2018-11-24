@@ -139,7 +139,7 @@ class Flame<T> private constructor(param: FlameParam<T>) {
 
         private fun remove(fragment: Fragment?) {
             var viewGroup: ViewGroup = fragment!!.view as ViewGroup
-            var view=viewGroup.getChildAt((viewGroup).childCount - 1);
+            var view=viewGroup.getChildAt((viewGroup).childCount - 1)
             if (view is FlameView) {
                 viewGroup.removeView(view)
             }
