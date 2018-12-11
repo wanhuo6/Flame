@@ -30,7 +30,7 @@ class FlameView constructor(context: Context, attrs: AttributeSet? = null, defSt
             return
         }
         ivError.visibility = View.VISIBLE
-        tvTip!!.setOnClickListener { onRetryListener.onRetryClick() }
+        this!!.setOnClickListener { onRetryListener.onRetryClick() }
     }
 
 }
