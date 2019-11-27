@@ -16,6 +16,9 @@ class FlameView constructor(context: Context, attrs: AttributeSet? = null, defSt
         setBackgroundResource(R.color.flame_bg)
         alpha = 0.92f
         isClickable = true
+        isFocusable=true
+        isFocusableInTouchMode=true
+        requestFocus()
     }
 
     fun setProgress(visibility: Int) {
