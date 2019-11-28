@@ -15,10 +15,6 @@ class FlameView constructor(context: Context, attrs: AttributeSet? = null, defSt
         layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         setBackgroundResource(R.color.flame_bg)
         alpha = 0.92f
-        isClickable = true
-        isFocusable=true
-        isFocusableInTouchMode=true
-        requestFocus()
     }
 
     fun setProgress(visibility: Int) {
@@ -34,6 +30,10 @@ class FlameView constructor(context: Context, attrs: AttributeSet? = null, defSt
         if (onRetryListener == null) {
             return
         }
+        isClickable = true
+        isFocusable=true
+        isFocusableInTouchMode=true
+        requestFocus()
         ivError.visibility = View.VISIBLE
         this!!.setOnClickListener { onRetryListener.onRetryClick() }
     }
